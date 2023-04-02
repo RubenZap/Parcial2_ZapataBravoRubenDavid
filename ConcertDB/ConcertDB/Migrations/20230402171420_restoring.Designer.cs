@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ConcertDB.Migrations
 {
     [DbContext(typeof(DatabaseContext))]
-    [Migration("20230402040220_add-createddateandmodifieddatenulleable")]
-    partial class addcreateddateandmodifieddatenulleable
+    [Migration("20230402171420_restoring")]
+    partial class restoring
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -27,9 +27,11 @@ namespace ConcertDB.Migrations
 
             modelBuilder.Entity("ConcertDB.DAL.Entities.Ticket", b =>
                 {
-                    b.Property<Guid>("Id")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<DateTime?>("CreatedDate")
                         .HasColumnType("datetime2");

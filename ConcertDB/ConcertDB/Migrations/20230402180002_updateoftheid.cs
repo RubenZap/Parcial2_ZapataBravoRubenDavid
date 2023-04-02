@@ -5,7 +5,7 @@
 namespace ConcertDB.Migrations
 {
     /// <inheritdoc />
-    public partial class IndexId_TicketsTbl : Migration
+    public partial class updateoftheid : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

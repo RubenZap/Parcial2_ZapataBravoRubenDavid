@@ -52,7 +52,9 @@ namespace ConcertDB.Controllers
             return View();
         }
 
-        //////////// HTTP POST - CREATE ACTION
+        // POST: Tickets/Create
+        // To protect from overposting attacks, enable the specific properties you want to bind to.
+        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Ticket ticket)
@@ -70,7 +72,7 @@ namespace ConcertDB.Controllers
                 {
                     if (dbUpdateException.InnerException.Message.Contains("duplicate"))
                     {
-                        ModelState.AddModelError(string.Empty, "Boleta no válida");
+                        ModelState.AddModelError(string.Empty, "Ya existe un país con el mismo nombre.");
                     }
                     else
                     {
@@ -86,7 +88,7 @@ namespace ConcertDB.Controllers
         }
 
         // GET: Tickets/Edit/5
-        public async Task<IActionResult> Edit(Guid? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if (id == null || _context.Tickets == null)
             {
@@ -106,7 +108,7 @@ namespace ConcertDB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, Ticket ticket)
+        public async Task<IActionResult> Edit(int id,  Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -157,7 +159,7 @@ namespace ConcertDB.Controllers
         // POST: Tickets/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(Guid id)
+        public async Task<IActionResult> DeleteConfirmed(int id)
         {
             if (_context.Tickets == null)
             {
