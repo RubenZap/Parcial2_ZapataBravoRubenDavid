@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ConcertDB.DAL;
 using ConcertDB.DAL.Entities;
+using System.Diagnostics.Metrics;
 
 namespace ConcertDB.Controllers
 {
@@ -28,7 +29,7 @@ namespace ConcertDB.Controllers
         }
 
         // GET: Tickets/Details/5
-        public async Task<IActionResult> Details(Guid? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if (id == null || _context.Tickets == null)
             {
@@ -51,19 +52,35 @@ namespace ConcertDB.Controllers
             return View();
         }
 
-        // POST: Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //////////// HTTP POST - CREATE ACTION
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create(Ticket ticket)
         {
             if (ModelState.IsValid)
             {
-                ticket.Id = Guid.NewGuid();
                 _context.Add(ticket);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+
+                }
+                catch (DbUpdateException dbUpdateException)
+                {
+                    if (dbUpdateException.InnerException.Message.Contains("duplicate"))
+                    {
+                        ModelState.AddModelError(string.Empty, "Boleta no válida");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError(string.Empty, dbUpdateException.InnerException.Message);
+                    }
+                }
+                catch (Exception exception)
+                {
+                    ModelState.AddModelError(string.Empty, exception.Message);
+                }
             }
             return View(ticket);
         }
@@ -89,7 +106,7 @@ namespace ConcertDB.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, Ticket ticket)
+        public async Task<IActionResult> Edit(int id, Ticket ticket)
         {
             if (id != ticket.Id)
             {
@@ -120,7 +137,7 @@ namespace ConcertDB.Controllers
         }
 
         // GET: Tickets/Delete/5
-        public async Task<IActionResult> Delete(Guid? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Tickets == null)
             {
@@ -156,7 +173,7 @@ namespace ConcertDB.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool TicketExists(Guid id)
+        private bool TicketExists(int id)
         {
           return (_context.Tickets?.Any(e => e.Id == id)).GetValueOrDefault();
         }
