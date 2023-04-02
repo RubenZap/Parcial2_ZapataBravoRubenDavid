@@ -6,6 +6,11 @@ namespace ConcertDB.DAL.Entities
     {
         public DateTime? UseDate { get; set; }
         public Boolean IsUsed { get; set; }
-        public int? EntraceGate { get; set; }
+
+
+
+        [MaxLength(11)]
+        [Required]
+        public string? EntraceGate { get; set; }
     }
 }
